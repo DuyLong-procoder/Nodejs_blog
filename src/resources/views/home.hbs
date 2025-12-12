@@ -1,0 +1,32 @@
+<p>DEBUG COUNT: {{products.length}}</p>
+
+<div class="p-4 bg-light rounded-3 mb-4">
+  <h1 class="mb-1">Welcome to DuyLongShop</h1>
+  <p class="mb-0">Midterm project - Express + Handlebars + MongoDB</p>
+</div>
+
+<h4 class="mb-3">New Products</h4>
+
+{{#if products.length}}
+  <div class="row g-3">
+    {{#each products}}
+      <div class="col-12 col-md-6 col-lg-3">
+        <div class="card h-100">
+          {{#if image}}
+            <img src="{{image}}" class="card-img-top" alt="{{name}}">
+          {{/if}}
+          <div class="card-body">
+            <h6 class="card-title">{{name}}</h6>
+            <div class="d-flex justify-content-between">
+              <span class="fw-bold">${{price}}</span>
+              <span class="text-muted">Stock: {{stock}}</span>
+            </div>
+            <a class="btn btn-sm btn-dark mt-2" href="/products/{{slug}}">View</a>
+          </div>
+        </div>
+      </div>
+    {{/each}}
+  </div>
+{{else}}
+  <p class="text-muted">Chưa có sản phẩm nào.</p>
+{{/if}}

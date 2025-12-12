@@ -1,0 +1,26 @@
+<h3>Edit product</h3>
+<form method="POST" action="/admin/products/{{product._id}}?_method=PUT" class="row g-3">
+  <div class="col-md-6">
+    <label class="form-label">Name</label>
+    <input name="name" class="form-control" value="{{product.name}}" required />
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">Price</label>
+    <input name="price" type="number" min="0" class="form-control" value="{{product.price}}" required />
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">Stock</label>
+    <input name="stock" type="number" min="0" class="form-control" value="{{product.stock}}" />
+  </div>
+  <div class="col-12">
+    <label class="form-label">Image URL</label>
+    <input name="image" class="form-control" value="{{product.image}}" />
+  </div>
+  <div class="col-12">
+    <label class="form-label">Description</label>
+    <textarea name="description" class="form-control" rows="4">{{product.description}}</textarea>
+  </div>
+  <div class="col-12">
+    <button class="btn btn-dark">Update</button>
+  </div>
+</form>
