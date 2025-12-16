@@ -192,21 +192,18 @@
                   </div>
                   
                   <div class="col-12 col-md-6">
+<div class="col-12 col-md-6">
   <label class="form-label fw-semibold">Product Image</label>
 
   <!-- chọn kiểu ảnh -->
   <div class="d-flex gap-4 mb-3">
     <div class="form-check">
-      <input class="form-check-input" type="radio" name="imageType" id="imageTypeUrl" checked>
-      <label class="form-check-label" for="imageTypeUrl">
-        Use Image URL
-      </label>
+      <input class="form-check-input" type="radio" name="imageType" id="imageTypeUrl" value="url" checked>
+      <label class="form-check-label" for="imageTypeUrl">Use Image URL</label>
     </div>
     <div class="form-check">
-      <input class="form-check-input" type="radio" name="imageType" id="imageTypeFile">
-      <label class="form-check-label" for="imageTypeFile">
-        Upload from Computer
-      </label>
+      <input class="form-check-input" type="radio" name="imageType" id="imageTypeFile" value="file">
+      <label class="form-check-label" for="imageTypeFile">Upload from Computer</label>
     </div>
   </div>
 
@@ -402,46 +399,64 @@
 </div>
 
 <script>
-  const urlRadio = document.getElementById("imageTypeUrl");
-  const fileRadio = document.getElementById("imageTypeFile");
-  const urlBox = document.getElementById("imageUrlBox");
-  const fileBox = document.getElementById("imageFileBox");
-  const preview = document.getElementById("imagePreview");
-  const previewImage = document.getElementById("previewImage");
+  document.addEventListener("DOMContentLoaded", () => {
+    const urlRadio = document.getElementById("imageTypeUrl");
+    const fileRadio = document.getElementById("imageTypeFile");
+    const urlBox = document.getElementById("imageUrlBox");
+    const fileBox = document.getElementById("imageFileBox");
+    const preview = document.getElementById("imagePreview");
+    const previewImage = document.getElementById("previewImage");
 
-  // toggle image type
-  urlRadio.addEventListener("change", () => {
-    urlBox.classList.remove("d-none");
-    fileBox.classList.add("d-none");
-    preview.classList.add("d-none");
-  });
+    const urlInput = document.querySelector('input[name="image"]');
+    const fileInput = document.querySelector('input[name="imageFile"]');
 
-  fileRadio.addEventListener("change", () => {
-    fileBox.classList.remove("d-none");
-    urlBox.classList.add("d-none");
-    preview.classList.add("d-none");
-  });
-
-  // preview URL
-  document.querySelector('input[name="image"]').addEventListener("input", e => {
-    if (urlRadio.checked && e.target.value) {
-      previewImage.src = e.target.value;
-      preview.classList.remove("d-none");
+    function resetPreview() {
+      preview.classList.add("d-none");
+      previewImage.src = "";
     }
-  });
 
-  // preview FILE
-  document.querySelector('input[name="imageFile"]').addEventListener("change", e => {
-    if (fileRadio.checked && e.target.files[0]) {
+    urlRadio.addEventListener("change", () => {
+      urlBox.classList.remove("d-none");
+      fileBox.classList.add("d-none");
+      if (fileInput) fileInput.value = "";
+      resetPreview();
+      if (urlInput && urlInput.value) {
+        previewImage.src = urlInput.value;
+        preview.classList.remove("d-none");
+      }
+    });
+
+    fileRadio.addEventListener("change", () => {
+      fileBox.classList.remove("d-none");
+      urlBox.classList.add("d-none");
+      if (urlInput) urlInput.value = "";
+      resetPreview();
+    });
+
+    // preview URL
+    urlInput?.addEventListener("input", (e) => {
+      if (!urlRadio.checked) return;
+      const val = e.target.value.trim();
+      if (!val) return resetPreview();
+      previewImage.src = val;
+      preview.classList.remove("d-none");
+    });
+
+    // preview FILE
+    fileInput?.addEventListener("change", (e) => {
+      if (!fileRadio.checked) return;
+      const f = e.target.files && e.target.files[0];
+      if (!f) return resetPreview();
       const reader = new FileReader();
-      reader.onload = ev => {
+      reader.onload = (ev) => {
         previewImage.src = ev.target.result;
         preview.classList.remove("d-none");
       };
-      reader.readAsDataURL(e.target.files[0]);
-    }
+      reader.readAsDataURL(f);
+    });
   });
 </script>
+
 
 <style>
   .admin-create-page {
