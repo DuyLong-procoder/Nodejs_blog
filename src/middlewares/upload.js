@@ -1,31 +1,31 @@
-const path = require("path");
-const fs = require("fs");
+// src/middlewares/upload.js
 const multer = require("multer");
+const cloudinary = require("cloudinary").v2;
 
-// Lưu vào: src/public/uploads  (để express.static phục vụ được)
-const uploadDir = path.join(__dirname, "..", "public", "uploads");
-if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
-
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => cb(null, uploadDir),
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname || "").toLowerCase();
-    const safeExt = ext || ".jpg";
-    cb(null, `${Date.now()}-${Math.round(Math.random() * 1e9)}${safeExt}`);
-  },
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-function fileFilter(req, file, cb) {
-  if (!file.mimetype?.startsWith("image/")) {
-    return cb(new Error("Only image files are allowed!"), false);
-  }
-  cb(null, true);
-}
-
+// Vercel: dùng memory storage (không ghi file ra đĩa)
 const upload = multer({
-  storage,
-  fileFilter,
+  storage: multer.memoryStorage(),
   limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
 });
 
-module.exports = upload;
+// upload buffer -> cloudinary
+function uploadToCloudinary(fileBuffer) {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: "nodejs_blog", resource_type: "image" },
+      (err, result) => {
+        if (err) return reject(err);
+        resolve(result);
+      }
+    );
+    stream.end(fileBuffer);
+  });
+}
+
+module.exports = { upload, uploadToCloudinary };

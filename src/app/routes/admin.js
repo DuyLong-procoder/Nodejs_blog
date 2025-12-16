@@ -22,16 +22,30 @@ router.get("/products", requireAdmin, async (req, res) => {
 router.get("/products/create", requireAdmin, (req, res) => {
   res.render("admin/products/create", { title: "Create product" });
 });
-const upload = require("../../middlewares/upload");
+const { upload, uploadToCloudinary } = require("../../middlewares/upload");
 
-router.post(
-  "/products",
-  upload.single("imageFile"), // tên input file
-  async (req, res) => {
-    const imageUrl = req.file ? req.file.path : req.body.image;
-    // lưu imageUrl vào DB
+
+router.post("/products", upload.single("imageFile"), async (req, res, next) => {
+  try {
+    // Nếu chọn URL
+    let imageUrl = req.body.image || "";
+
+    // Nếu chọn upload file
+    if (req.body.imageType === "file" && req.file) {
+      const result = await uploadToCloudinary(req.file.buffer);
+      imageUrl = result.secure_url;
+    }
+
+    // TODO: lưu imageUrl vào DB (field image)
+    // req.body.image = imageUrl; (tuỳ bạn)
+    // ... create product
+
+    res.redirect("/admin/products");
+  } catch (err) {
+    next(err);
   }
-);
+});
+
 
 
 router.post("/products", requireAdmin, async (req, res) => {
