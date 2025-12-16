@@ -22,6 +22,17 @@ router.get("/products", requireAdmin, async (req, res) => {
 router.get("/products/create", requireAdmin, (req, res) => {
   res.render("admin/products/create", { title: "Create product" });
 });
+const upload = require("../../middlewares/upload");
+
+router.post(
+  "/products",
+  upload.single("imageFile"), // tên input file
+  async (req, res) => {
+    const imageUrl = req.file ? req.file.path : req.body.image;
+    // lưu imageUrl vào DB
+  }
+);
+
 
 router.post("/products", requireAdmin, async (req, res) => {
   await Product.create({
