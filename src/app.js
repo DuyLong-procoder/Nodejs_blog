@@ -4,7 +4,6 @@ const morgan = require("morgan");
 const methodOverride = require("method-override");
 const handleBars = require("express-handlebars");
 const session = require("express-session");
-const db = require("./config/db");
 
 const siteRoutes = require("./app/routes/site");
 const productRoutes = require("./app/routes/products");
@@ -19,9 +18,7 @@ app.use(morgan("combined"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(methodOverride("_method"));
-
-// static
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "../public"))); // chú ý path
 
 // session
 app.use(
@@ -32,22 +29,20 @@ app.use(
   })
 );
 
-// expose user to views
+// expose user
 app.use((req, res, next) => {
   res.locals.currentUser = req.session.user || null;
   next();
 });
 
-// view engine + helpers
+// view engine
 app.engine(
   "hbs",
   handleBars.engine({
     extname: ".hbs",
     helpers: {
       ifEquals(a, b, options) {
-        return String(a) === String(b)
-          ? options.fn(this)
-          : options.inverse(this);
+        return String(a) === String(b) ? options.fn(this) : options.inverse(this);
       },
       firstChar(name) {
         if (!name) return "";
@@ -64,30 +59,15 @@ app.engine(
         for (let i = start; i <= end; i++) out += options.fn(i);
         return out;
       },
+      json(context) {
+        return JSON.stringify(context, null, 2);
+      },
     },
   })
 );
 
 app.set("view engine", "hbs");
-app.set("views", path.join(__dirname, "resources/views"));
-
-// ✅ Mongo connect: phải chạy TRƯỚC routes
-let isConnected = false;
-async function ensureDb() {
-  if (isConnected) return;
-  await db.connect();
-  isConnected = true;
-}
-
-app.use(async (req, res, next) => {
-  try {
-    await ensureDb();
-    next();
-  } catch (err) {
-    console.error("DB connect error:", err);
-    next(err);
-  }
-});
+app.set("views", path.join(__dirname, "../resources/views"));
 
 // routes
 app.use("/", siteRoutes);
@@ -96,11 +76,4 @@ app.use("/admin", adminRoutes);
 app.use("/auth", authRoutes);
 app.use("/categories", categoryRoutes);
 
-// local only
-if (require.main === module) {
-  const port = process.env.PORT || 3000;
-  app.listen(port, () => console.log(`App listening on port ${port}`));
-}
-
-// ✅ export for vercel serverless
 module.exports = app;
