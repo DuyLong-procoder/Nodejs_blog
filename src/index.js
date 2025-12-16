@@ -3,11 +3,14 @@ const path = require("path");
 const morgan = require("morgan");
 const methodOverride = require("method-override");
 const handleBars = require("express-handlebars");
+const session = require("express-session");
 const db = require("./config/db");
 
 const siteRoutes = require("./app/routes/site");
 const productRoutes = require("./app/routes/products");
 const adminRoutes = require("./app/routes/admin");
+const authRoutes = require("./app/routes/auth");
+const categoryRoutes = require("./app/routes/categories");
 
 const app = express();
 const port = 3000;
@@ -19,17 +22,77 @@ app.use(express.json());
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
 
-// view engine
-app.engine("hbs", handleBars.engine({ extname: ".hbs" }));
+// session
+app.use(
+  session({
+    secret: "duylongshop_secret",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+// expose user to views
+app.use((req, res, next) => {
+  res.locals.currentUser = req.session.user || null;
+  next();
+});
+
+// view engine + helpers
+app.engine(
+  "hbs",
+  handleBars.engine({
+    extname: ".hbs",
+    helpers: {
+      ifEquals(a, b, options) {
+        return String(a) === String(b)
+          ? options.fn(this)
+          : options.inverse(this);
+      },
+
+      firstChar(name) {
+        if (!name) return "";
+        return String(name).trim().charAt(0).toUpperCase();
+      },
+
+      
+      or(...args) {
+        const values = args.slice(0, -1); 
+        return values.some(Boolean);
+      },
+
+     
+      range(from, to, options) {
+        let out = "";
+        const start = Number(from) || 1;
+        const end = Number(to) || 1;
+        for (let i = start; i <= end; i++) out += options.fn(i);
+        return out;
+      },
+
+     
+      encodeURIComponent(str) {
+        return encodeURIComponent(str || "");
+      },
+
+    
+      json(context) {
+        return JSON.stringify(context, null, 2);
+      },
+    },
+  })
+);
+
 app.set("view engine", "hbs");
 app.set("views", path.join(__dirname, "resources/views"));
 
-// routes
+
 app.use("/", siteRoutes);
 app.use("/products", productRoutes);
+app.use("/categories", categoryRoutes);
 app.use("/admin", adminRoutes);
+app.use("/auth", authRoutes);
 
-// start
+
 db.connect()
   .then(() => {
     app.listen(port, () => console.log(`App listening on port ${port}`));

@@ -1,0 +1,51 @@
+<div class="py-4">
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
+    <div>
+      <h1 class="fw-bold mb-1">
+        <i class="bi bi-tags me-2 text-danger"></i>Categories
+      </h1>
+      <div class="text-muted">Chọn danh mục để xem sản phẩm theo từng nhóm.</div>
+    </div>
+    <a class="btn btn-outline-dark" href="/products">
+      <i class="bi bi-grid me-1"></i>All Products
+    </a>
+  </div>
+
+  {{#if categories.length}}
+    <div class="row g-3">
+      {{#each categories}}
+        <div class="col-12 col-md-6 col-lg-4">
+          <a href="/categories/{{encodeURIComponent name}}" class="text-decoration-none">
+            <div class="card border-0 shadow-sm h-100 category-card">
+              <div class="card-body d-flex justify-content-between align-items-center">
+                <div>
+                  <div class="fw-bold text-dark fs-5">{{name}}</div>
+                  <div class="text-muted small">{{total}} products</div>
+                </div>
+                <div class="icon-badge">
+                  <i class="bi bi-arrow-right"></i>
+                </div>
+              </div>
+            </div>
+          </a>
+        </div>
+      {{/each}}
+    </div>
+  {{else}}
+    <div class="card border-0 shadow-sm">
+      <div class="card-body text-muted">Chưa có danh mục nào.</div>
+    </div>
+  {{/if}}
+</div>
+
+<style>
+  .category-card { border-radius: 14px; transition: all .25s ease; }
+  .category-card:hover { transform: translateY(-6px); box-shadow: 0 15px 35px rgba(0,0,0,.08)!important; }
+  .icon-badge{
+    width: 42px; height: 42px;
+    border-radius: 12px;
+    display:flex; align-items:center; justify-content:center;
+    background: linear-gradient(45deg, #ff6b6b, #ff8e53);
+    color:#fff;
+  }
+</style>

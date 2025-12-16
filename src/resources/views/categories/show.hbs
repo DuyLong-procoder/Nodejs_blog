@@ -1,0 +1,93 @@
+<div class="py-4">
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3 mb-4">
+    <div>
+      <h1 class="fw-bold mb-1">
+        <i class="bi bi-folder2-open me-2 text-warning"></i>{{category}}
+      </h1>
+      <div class="text-muted">Tổng: {{totalItems}} sản phẩm</div>
+    </div>
+    <a class="btn btn-outline-dark" href="/categories">
+      <i class="bi bi-arrow-left me-1"></i>Back Categories
+    </a>
+  </div>
+
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="card-body">
+      <form method="get" action="/categories/{{encodeURIComponent category}}" class="row g-2 align-items-end">
+        <div class="col-12 col-md-5">
+          <label class="form-label">Search</label>
+          <input class="form-control" name="q" value="{{q}}" placeholder="Search by name...">
+        </div>
+        <div class="col-6 col-md-2">
+          <label class="form-label">Min</label>
+          <input class="form-control" type="number" name="min" value="{{min}}" min="0">
+        </div>
+        <div class="col-6 col-md-2">
+          <label class="form-label">Max</label>
+          <input class="form-control" type="number" name="max" value="{{max}}" min="0">
+        </div>
+        <div class="col-12 col-md-3 d-grid">
+          <button class="btn btn-dark">
+            <i class="bi bi-filter me-1"></i>Apply
+          </button>
+        </div>
+
+        {{#if (or q min max)}}
+          <div class="col-12">
+            <a class="btn btn-outline-secondary btn-sm" href="/categories/{{encodeURIComponent category}}">
+              <i class="bi bi-x-circle me-1"></i>Clear filters
+            </a>
+          </div>
+        {{/if}}
+      </form>
+    </div>
+  </div>
+
+  {{#if products.length}}
+    <div class="row g-3">
+      {{#each products}}
+        <div class="col-12 col-md-6 col-lg-3">
+          <div class="card border-0 shadow-sm h-100 overflow-hidden">
+            {{#if image}}
+              <img src="{{image}}" class="w-100" style="height:180px;object-fit:cover;" alt="{{name}}">
+            {{/if}}
+            <div class="card-body">
+              <div class="fw-bold">{{name}}</div>
+              <div class="d-flex justify-content-between mt-2">
+                <span class="fw-bold text-danger">${{price}}</span>
+                <span class="text-muted small">Stock: {{stock}}</span>
+              </div>
+              <a class="btn btn-sm btn-dark mt-3 w-100" href="/products/{{slug}}">
+                View
+              </a>
+            </div>
+          </div>
+        </div>
+      {{/each}}
+    </div>
+
+    <nav class="mt-4">
+      <ul class="pagination justify-content-center">
+        {{#if hasPrev}}
+          <li class="page-item">
+            <a class="page-link" href="/categories/{{encodeURIComponent category}}?page={{prevPage}}&q={{q}}&min={{min}}&max={{max}}">Prev</a>
+          </li>
+        {{/if}}
+
+        <li class="page-item disabled"><span class="page-link">Page {{page}} / {{totalPages}}</span></li>
+
+        {{#if hasNext}}
+          <li class="page-item">
+            <a class="page-link" href="/categories/{{encodeURIComponent category}}?page={{nextPage}}&q={{q}}&min={{min}}&max={{max}}">Next</a>
+          </li>
+        {{/if}}
+      </ul>
+    </nav>
+  {{else}}
+    <div class="card border-0 shadow-sm">
+      <div class="card-body text-muted">
+        Không có sản phẩm trong danh mục này.
+      </div>
+    </div>
+  {{/if}}
+</div>

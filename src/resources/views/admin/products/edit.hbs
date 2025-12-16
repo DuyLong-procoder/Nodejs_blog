@@ -1,26 +1,41 @@
-<h3>Edit product</h3>
-<form method="POST" action="/admin/products/{{product._id}}?_method=PUT" class="row g-3">
-  <div class="col-md-6">
-    <label class="form-label">Name</label>
-    <input name="name" class="form-control" value="{{product.name}}" required />
+<div class="card shadow-sm">
+  <div class="card-body">
+    <h3 class="mb-3">Edit product</h3>
+
+    <form method="post" action="/admin/products/{{product._id}}?_method=PUT">
+      <div class="row g-2">
+        <div class="col-12 col-md-6">
+          <label class="form-label">Name</label>
+          <input class="form-control" name="name" value="{{product.name}}" required>
+        </div>
+        <div class="col-12 col-md-6">
+          <label class="form-label">Category</label>
+          <input class="form-control" name="category" value="{{product.category}}">
+        </div>
+
+        <div class="col-12 col-md-4">
+          <label class="form-label">Price</label>
+          <input class="form-control" type="number" name="price" min="0" value="{{product.price}}" required>
+        </div>
+        <div class="col-12 col-md-4">
+          <label class="form-label">Stock</label>
+          <input class="form-control" type="number" name="stock" min="0" value="{{product.stock}}">
+        </div>
+        <div class="col-12 col-md-4">
+          <label class="form-label">Image URL</label>
+          <input class="form-control" name="image" value="{{product.image}}">
+        </div>
+
+        <div class="col-12">
+          <label class="form-label">Description</label>
+          <textarea class="form-control" rows="4" name="description">{{product.description}}</textarea>
+        </div>
+
+        <div class="col-12 d-flex gap-2">
+          <button class="btn btn-dark">Update</button>
+          <a class="btn btn-outline-dark" href="/admin/products">Back</a>
+        </div>
+      </div>
+    </form>
   </div>
-  <div class="col-md-3">
-    <label class="form-label">Price</label>
-    <input name="price" type="number" min="0" class="form-control" value="{{product.price}}" required />
-  </div>
-  <div class="col-md-3">
-    <label class="form-label">Stock</label>
-    <input name="stock" type="number" min="0" class="form-control" value="{{product.stock}}" />
-  </div>
-  <div class="col-12">
-    <label class="form-label">Image URL</label>
-    <input name="image" class="form-control" value="{{product.image}}" />
-  </div>
-  <div class="col-12">
-    <label class="form-label">Description</label>
-    <textarea name="description" class="form-control" rows="4">{{product.description}}</textarea>
-  </div>
-  <div class="col-12">
-    <button class="btn btn-dark">Update</button>
-  </div>
-</form>
+</div>

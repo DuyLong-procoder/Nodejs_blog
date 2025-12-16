@@ -1,26 +1,564 @@
-<h3>Create product</h3>
-<form method="POST" action="/admin/products" class="row g-3">
-  <div class="col-md-6">
-    <label class="form-label">Name</label>
-    <input name="name" class="form-control" required />
+<div class="admin-create-page py-5">
+  <div class="container-fluid px-lg-5">
+    {{!-- Header Section --}}
+    <div class="page-header mb-5">
+      <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+        <div>
+          <h1 class="display-5 fw-bold text-dark mb-2">
+            <i class="bi bi-plus-circle me-2 text-success"></i>Create New Product
+          </h1>
+          <p class="text-muted mb-0">Add a new product to your store catalog</p>
+        </div>
+        <div class="d-flex align-items-center gap-2">
+          <a href="/admin/products" class="btn btn-outline-dark btn-lg px-4">
+            <i class="bi bi-arrow-left me-2"></i>Back to Products
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-12 col-xl-10">
+        <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+          {{!-- Card Header --}}
+          <div class="card-header bg-dark text-white py-4">
+            <div class="d-flex align-items-center">
+              <i class="bi bi-box-seam fs-3 me-3"></i>
+              <div>
+                <h4 class="fw-bold mb-1">Product Information</h4>
+                <p class="text-white-50 mb-0">Fill in all required fields to create a new product</p>
+              </div>
+            </div>
+          </div>
+
+          {{!-- Form Section --}}
+          <div class="card-body p-4 p-lg-5">
+            <form method="post" action="/admin/products" id="createProductForm" class="needs-validation" novalidate>
+              {{!-- Basic Information --}}
+              <div class="section mb-5">
+                <h5 class="fw-bold mb-4 d-flex align-items-center">
+                  <span class="section-icon me-2">
+                    <i class="bi bi-info-circle text-primary"></i>
+                  </span>
+                  Basic Information
+                </h5>
+                <div class="row g-4">
+                  <div class="col-12 col-md-8">
+                    <label class="form-label fw-semibold">
+                      Product Name <span class="text-danger">*</span>
+                    </label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light border-end-0">
+                        <i class="bi bi-tag text-muted"></i>
+                      </span>
+                      <input 
+                        type="text" 
+                        class="form-control form-control-lg border-start-0" 
+                        name="name" 
+                        required
+                        placeholder="Enter product name"
+                      >
+                      <div class="invalid-feedback">
+                        Please enter a product name.
+                      </div>
+                    </div>
+                    <div class="form-text text-muted">
+                      The name that will be displayed to customers
+                    </div>
+                  </div>
+                  
+                  <div class="col-12 col-md-4">
+                    <label class="form-label fw-semibold">SKU (Optional)</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light border-end-0">
+                        <i class="bi bi-upc-scan text-muted"></i>
+                      </span>
+                      <input 
+                        type="text" 
+                        class="form-control form-control-lg border-start-0" 
+                        name="sku"
+                        placeholder="PROD-001"
+                      >
+                    </div>
+                    <div class="form-text text-muted">
+                      Unique product identifier
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {{!-- Pricing & Inventory --}}
+              <div class="section mb-5">
+                <h5 class="fw-bold mb-4 d-flex align-items-center">
+                  <span class="section-icon me-2">
+                    <i class="bi bi-currency-dollar text-success"></i>
+                  </span>
+                  Pricing & Inventory
+                </h5>
+                <div class="row g-4">
+                  <div class="col-12 col-md-4">
+                    <label class="form-label fw-semibold">
+                      Price <span class="text-danger">*</span>
+                    </label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light border-end-0">
+                        <i class="bi bi-currency-dollar"></i>
+                      </span>
+                      <input 
+                        type="number" 
+                        class="form-control form-control-lg border-start-0" 
+                        name="price" 
+                        min="0" 
+                        step="0.01"
+                        required
+                        placeholder="0.00"
+                      >
+                      <div class="invalid-feedback">
+                        Please enter a valid price.
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="col-12 col-md-4">
+                    <label class="form-label fw-semibold">Original Price</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light border-end-0">
+                        <i class="bi bi-tag text-muted"></i>
+                      </span>
+                      <input 
+                        type="number" 
+                        class="form-control form-control-lg border-start-0" 
+                        name="originalPrice"
+                        min="0" 
+                        step="0.01"
+                        placeholder="For discounted items"
+                      >
+                    </div>
+                    <div class="form-text text-muted">
+                      Leave empty if not on sale
+                    </div>
+                  </div>
+                  
+                  <div class="col-12 col-md-4">
+                    <label class="form-label fw-semibold">Stock Quantity</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light border-end-0">
+                        <i class="bi bi-box text-muted"></i>
+                      </span>
+                      <input 
+                        type="number" 
+                        class="form-control form-control-lg border-start-0" 
+                        name="stock" 
+                        min="0" 
+                        value="0"
+                        placeholder="0"
+                      >
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {{!-- Category & Image --}}
+              <div class="section mb-5">
+                <h5 class="fw-bold mb-4 d-flex align-items-center">
+                  <span class="section-icon me-2">
+                    <i class="bi bi-image text-info"></i>
+                  </span>
+                  Category & Media
+                </h5>
+                <div class="row g-4">
+                  <div class="col-12 col-md-6">
+                    <label class="form-label fw-semibold">Category</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light border-end-0">
+                        <i class="bi bi-folder text-muted"></i>
+                      </span>
+                      <select class="form-select form-select-lg border-start-0" name="category">
+                        <option value="">Ai bát</option>
+                        <option value="Candles">Ai phôn</option>
+                        <option value="Handmade">Mạc bụt</option>
+                        <option value="Gill Sets">E Pót</option>
+                        <option value="Plastic Gifts">E Tác</option>
+                        <option value="Handy Cream">Hét phôn</option>
+                        <option value="Cosmetics">Chạc</option>
+                        <option value="Silk Accessories">Mi cờ rô</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+                    <div class="form-text text-muted">
+                      Or create a new category by typing
+                    </div>
+                  </div>
+                  
+                  <div class="col-12 col-md-6">
+                    <label class="form-label fw-semibold">Product Image URL</label>
+                    <div class="input-group">
+                      <span class="input-group-text bg-light border-end-0">
+                        <i class="bi bi-link text-muted"></i>
+                      </span>
+                      <input 
+                        type="url" 
+                        class="form-control form-control-lg border-start-0" 
+                        name="image"
+                        placeholder="https://example.com/image.jpg"
+                      >
+                    </div>
+                    <div class="form-text text-muted">
+                      Enter a direct image URL
+                    </div>
+                    
+                    {{!-- Image Preview --}}
+                    <div id="imagePreview" class="mt-3 d-none">
+                      <div class="card border">
+                        <div class="card-body p-3">
+                          <h6 class="fw-bold mb-2">Image Preview</h6>
+                          <div class="preview-container text-center">
+                            <img id="previewImage" class="img-fluid rounded" style="max-height: 150px;">
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {{!-- Additional Images --}}
+                  <div class="col-12">
+                    <label class="form-label fw-semibold">Additional Image URLs (Optional)</label>
+                    <div id="additionalImages">
+                      <div class="input-group mb-2">
+                        <span class="input-group-text bg-light">
+                          <i class="bi bi-image text-muted"></i>
+                        </span>
+                        <input 
+                          type="url" 
+                          class="form-control" 
+                          name="additionalImages[]"
+                          placeholder="https://example.com/image2.jpg"
+                        >
+                        <button type="button" class="btn btn-outline-secondary" onclick="addMoreImage()">
+                          <i class="bi bi-plus"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="form-text text-muted">
+                      Add more images for product gallery
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {{!-- Description --}}
+              <div class="section mb-5">
+                <h5 class="fw-bold mb-4 d-flex align-items-center">
+                  <span class="section-icon me-2">
+                    <i class="bi bi-card-text text-warning"></i>
+                  </span>
+                  Description & Details
+                </h5>
+                <div class="row g-4">
+                  <div class="col-12">
+                    <label class="form-label fw-semibold">
+                      Product Description <span class="text-danger">*</span>
+                    </label>
+                    <textarea 
+                      class="form-control" 
+                      rows="6" 
+                      name="description" 
+                      required
+                      placeholder="Describe your product in detail..."
+                    ></textarea>
+                    <div class="invalid-feedback">
+                      Please enter a product description.
+                    </div>
+                    <div class="form-text text-muted">
+                      Detailed description helps customers understand your product better
+                    </div>
+                  </div>
+                  
+                  {{!-- Features --}}
+                  <div class="col-12">
+                    <label class="form-label fw-semibold">Key Features</label>
+                    <div id="features">
+                      <div class="input-group mb-2">
+                        <span class="input-group-text bg-light">
+                          <i class="bi bi-check-circle text-muted"></i>
+                        </span>
+                        <input 
+                          type="text" 
+                          class="form-control" 
+                          name="features[]"
+                          placeholder="Enter a key feature"
+                        >
+                        <button type="button" class="btn btn-outline-secondary" onclick="addMoreFeature()">
+                          <i class="bi bi-plus"></i>
+                        </button>
+                      </div>
+                    </div>
+                    <div class="form-text text-muted">
+                      Add bullet points for product features
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {{!-- Status & Options --}}
+              <div class="section mb-5">
+                <h5 class="fw-bold mb-4 d-flex align-items-center">
+                  <span class="section-icon me-2">
+                    <i class="bi bi-gear text-secondary"></i>
+                  </span>
+                  Product Status
+                </h5>
+                <div class="row g-4">
+                  <div class="col-12 col-md-4">
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" name="isFeatured" id="isFeatured" checked>
+                      <label class="form-check-label fw-semibold" for="isFeatured">
+                        Featured Product
+                      </label>
+                    </div>
+                    <div class="form-text text-muted">
+                      Show on homepage featured section
+                    </div>
+                  </div>
+                  
+                  <div class="col-12 col-md-4">
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" name="isActive" id="isActive" checked>
+                      <label class="form-check-label fw-semibold" for="isActive">
+                        Active Status
+                      </label>
+                    </div>
+                    <div class="form-text text-muted">
+                      Product will be visible to customers
+                    </div>
+                  </div>
+                  
+                  <div class="col-12 col-md-4">
+                    <div class="form-check form-switch">
+                      <input class="form-check-input" type="checkbox" name="isSale" id="isSale">
+                      <label class="form-check-label fw-semibold" for="isSale">
+                        On Sale
+                      </label>
+                    </div>
+                    <div class="form-text text-muted">
+                      Show sale badge on product
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {{!-- Action Buttons --}}
+              <div class="border-top pt-5 mt-4">
+                <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3">
+                  <div class="text-muted">
+                    <i class="bi bi-info-circle me-1"></i>
+                    All fields marked with <span class="text-danger">*</span> are required
+                  </div>
+                  <div class="d-flex gap-3">
+                    <a href="/admin/products" class="btn btn-outline-dark btn-lg px-5">
+                      <i class="bi bi-x-circle me-2"></i>Cancel
+                    </a>
+                    <button type="submit" class="btn btn-success btn-lg px-5">
+                      <i class="bi bi-check-circle me-2"></i>Create Product
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="col-md-3">
-    <label class="form-label">Price</label>
-    <input name="price" type="number" min="0" class="form-control" required />
-  </div>
-  <div class="col-md-3">
-    <label class="form-label">Stock</label>
-    <input name="stock" type="number" min="0" class="form-control" />
-  </div>
-  <div class="col-12">
-    <label class="form-label">Image URL</label>
-    <input name="image" class="form-control" placeholder="https://..." />
-  </div>
-  <div class="col-12">
-    <label class="form-label">Description</label>
-    <textarea name="description" class="form-control" rows="4"></textarea>
-  </div>
-  <div class="col-12">
-    <button class="btn btn-dark">Save</button>
-  </div>
-</form>
+</div>
+
+<script>
+  // Form Validation
+  (function() {
+    'use strict';
+    const form = document.getElementById('createProductForm');
+    
+    form.addEventListener('submit', function(event) {
+      if (!form.checkValidity()) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      form.classList.add('was-validated');
+    }, false);
+  })();
+
+  // Image Preview
+  document.querySelector('input[name="image"]').addEventListener('input', function(e) {
+    const preview = document.getElementById('imagePreview');
+    const previewImage = document.getElementById('previewImage');
+    const url = e.target.value;
+    
+    if (url) {
+      previewImage.src = url;
+      preview.classList.remove('d-none');
+    } else {
+      preview.classList.add('d-none');
+    }
+  });
+
+  // Add more image fields
+  function addMoreImage() {
+    const container = document.getElementById('additionalImages');
+    const div = document.createElement('div');
+    div.className = 'input-group mb-2';
+    div.innerHTML = `
+      <span class="input-group-text bg-light">
+        <i class="bi bi-image text-muted"></i>
+      </span>
+      <input type="url" class="form-control" name="additionalImages[]" placeholder="https://example.com/image.jpg">
+      <button type="button" class="btn btn-outline-danger" onclick="this.parentElement.remove()">
+        <i class="bi bi-trash"></i>
+      </button>
+    `;
+    container.appendChild(div);
+  }
+
+  // Add more feature fields
+  function addMoreFeature() {
+    const container = document.getElementById('features');
+    const div = document.createElement('div');
+    div.className = 'input-group mb-2';
+    div.innerHTML = `
+      <span class="input-group-text bg-light">
+        <i class="bi bi-check-circle text-muted"></i>
+      </span>
+      <input type="text" class="form-control" name="features[]" placeholder="Enter a key feature">
+      <button type="button" class="btn btn-outline-danger" onclick="this.parentElement.remove()">
+        <i class="bi bi-trash"></i>
+      </button>
+    `;
+    container.appendChild(div);
+  }
+
+  // Auto-generate slug from name
+  document.querySelector('input[name="name"]').addEventListener('input', function(e) {
+    const nameInput = e.target;
+    const slugInput = document.querySelector('input[name="slug"]');
+    if (slugInput && !slugInput.value) {
+      const slug = nameInput.value
+        .toLowerCase()
+        .replace(/[^\w\s]/g, '')
+        .replace(/\s+/g, '-');
+      slugInput.value = slug;
+    }
+  });
+</script>
+
+<style>
+  .admin-create-page {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    min-height: 100vh;
+  }
+
+  .page-header {
+    border-bottom: 2px solid #eaeaea;
+    padding-bottom: 1.5rem;
+  }
+
+  .rounded-4 {
+    border-radius: 1.5rem !important;
+  }
+
+  .section {
+    padding: 2rem;
+    background: white;
+    border-radius: 1rem;
+    border: 1px solid #eaeaea;
+    transition: all 0.3s ease;
+  }
+
+  .section:hover {
+    border-color: #dee2e6;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+  }
+
+  .section-icon {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, #6c757d, #495057);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+
+  .section-icon i {
+    font-size: 1.2rem;
+  }
+
+  .form-control-lg, .form-select-lg {
+    padding: 1rem 1.25rem;
+    font-size: 1.1rem;
+  }
+
+  .input-group-text {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+  }
+
+  .form-check-input:checked {
+    background-color: #198754;
+    border-color: #198754;
+  }
+
+  .form-check-input:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  }
+
+  .btn-success {
+    background: linear-gradient(135deg, #198754, #20c997);
+    border: none;
+    transition: all 0.3s ease;
+  }
+
+  .btn-success:hover {
+    background: linear-gradient(135deg, #157347, #1aa179);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(25, 135, 84, 0.3);
+  }
+
+  .btn-outline-dark:hover {
+    background-color: #212529;
+  }
+
+  .form-text {
+    font-size: 0.875rem;
+  }
+
+  .invalid-feedback {
+    font-size: 0.875rem;
+  }
+
+  .preview-container {
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 1rem;
+  }
+
+  @media (max-width: 768px) {
+    .section {
+      padding: 1.5rem;
+    }
+
+    .display-5 {
+      font-size: 2rem;
+    }
+
+    .btn-lg {
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+    }
+
+    .container-fluid {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+  }
+</style>

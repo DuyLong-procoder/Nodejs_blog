@@ -1,0 +1,391 @@
+<div class="product-detail-page py-5">
+  <div class="container-fluid">
+    {{!-- Breadcrumb --}}
+    <nav aria-label="breadcrumb" class="mb-4">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/" class="text-decoration-none">Home</a></li>
+        <li class="breadcrumb-item"><a href="/products" class="text-decoration-none">Products</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{product.name}}</li>
+      </ol>
+    </nav>
+
+    <div class="row g-5">
+      {{!-- Product Images Section --}}
+      <div class="col-12 col-lg-6">
+        <div class="card border-0 shadow-lg overflow-hidden rounded-4">
+          {{#if product.image}}
+            <div class="main-image position-relative">
+              <img 
+                src="{{product.image}}" 
+                class="img-fluid w-100" 
+                style="height: 400px; object-fit: contain; background: #f8f9fa;" 
+                alt="{{product.name}}"
+                id="mainProductImage"
+              >
+              {{#if product.isNew}}
+                <span class="position-absolute top-0 start-0 m-3 badge bg-success px-3 py-2">
+                  <i class="bi bi-star-fill me-1"></i>NEW
+                </span>
+              {{/if}}
+              {{#if product.isSale}}
+                <span class="position-absolute top-0 end-0 m-3 badge bg-danger px-3 py-2">
+                  <i class="bi bi-lightning-fill me-1"></i>SALE
+                </span>
+              {{/if}}
+            </div>
+            
+            {{!-- Image Gallery (if you have multiple images) --}}
+            <div class="row g-2 p-3 bg-light">
+              <div class="col-3">
+                <div class="thumbnail-image active border border-dark rounded-3 p-2 cursor-pointer" 
+                     onclick="changeMainImage('{{product.image}}')">
+                  <img src="{{product.image}}" class="img-fluid" style="height: 80px; object-fit: contain;">
+                </div>
+              </div>
+              {{#each additionalImages}}
+                <div class="col-3">
+                  <div class="thumbnail-image border rounded-3 p-2 cursor-pointer" 
+                       onclick="changeMainImage('{{this}}')">
+                    <img src="{{this}}" class="img-fluid" style="height: 80px; object-fit: contain;">
+                  </div>
+                </div>
+              {{/each}}
+            </div>
+          {{else}}
+            <div class="text-center p-5 bg-light rounded-4">
+              <i class="bi bi-image text-muted display-4 mb-3"></i>
+              <p class="text-muted mb-0">No image available</p>
+            </div>
+          {{/if}}
+        </div>
+
+        {{!-- Product Info Cards --}}
+        <div class="row g-3 mt-4">
+          <div class="col-6">
+            <div class="card border-0 shadow-sm h-100 bg-light">
+              <div class="card-body text-center p-3">
+                <i class="bi bi-truck text-primary fs-4 mb-2"></i>
+                <h6 class="fw-bold mb-1">Free Shipping</h6>
+                <p class="text-muted small mb-0">On orders over $100</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="card border-0 shadow-sm h-100 bg-light">
+              <div class="card-body text-center p-3">
+                <i class="bi bi-arrow-counterclockwise text-success fs-4 mb-2"></i>
+                <h6 class="fw-bold mb-1">30-Day Return</h6>
+                <p class="text-muted small mb-0">Money back guarantee</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {{!-- Product Details Section --}}
+      <div class="col-12 col-lg-6">
+        <div class="product-details">
+          {{!-- Product Title --}}
+          <h1 class="display-5 fw-bold text-dark mb-3">{{product.name}}</h1>
+          
+          {{!-- Rating and Reviews --}}
+          <div class="d-flex align-items-center gap-3 mb-3">
+            <div class="text-warning">
+              <i class="bi bi-star-fill"></i>
+              <i class="bi bi-star-fill"></i>
+              <i class="bi bi-star-fill"></i>
+              <i class="bi bi-star-fill"></i>
+              <i class="bi bi-star-half"></i>
+              <span class="text-dark ms-2 fw-semibold">4.5</span>
+            </div>
+            <span class="text-muted">(128 reviews)</span>
+            <span class="badge bg-success">
+              <i class="bi bi-check-circle me-1"></i>Verified
+            </span>
+          </div>
+
+          {{!-- Category and Stock --}}
+          <div class="d-flex align-items-center gap-3 mb-4">
+            <span class="badge bg-dark rounded-pill px-3 py-2">
+              <i class="bi bi-tag me-1"></i>{{product.category}}
+            </span>
+            <div class="stock-status">
+              {{#if product.stock}}
+                <span class="badge bg-success rounded-pill px-3 py-2">
+                  <i class="bi bi-check-circle me-1"></i>In Stock ({{product.stock}} units)
+                </span>
+              {{else}}
+                <span class="badge bg-danger rounded-pill px-3 py-2">
+                  <i class="bi bi-x-circle me-1"></i>Out of Stock
+                </span>
+              {{/if}}
+            </div>
+          </div>
+
+          {{!-- Price Section --}}
+          <div class="price-section mb-4">
+            {{#if product.originalPrice}}
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="text-decoration-line-through text-muted fs-4">${{product.originalPrice}}</span>
+                <span class="badge bg-danger fs-6">Save {{calculateDiscount product.price product.originalPrice}}%</span>
+              </div>
+            {{/if}}
+            <h2 class="display-4 fw-bold text-dark">
+              ${{product.price}}
+              {{#if product.originalPrice}}
+                <small class="fs-6 text-danger fw-normal">(Discounted)</small>
+              {{/if}}
+            </h2>
+          </div>
+
+          {{!-- Product Description --}}
+          <div class="product-description mb-4">
+            <h5 class="fw-bold mb-3">
+              <i class="bi bi-card-text me-2"></i>Description
+            </h5>
+            <div class="card border-0 bg-light">
+              <div class="card-body">
+                <p class="mb-0">{{product.description}}</p>
+              </div>
+            </div>
+          </div>
+
+          {{!-- Quantity and Actions --}}
+          <div class="action-section mb-4">
+            <div class="row g-3 align-items-center">
+              <div class="col-auto">
+                <label class="form-label fw-bold">Quantity</label>
+              </div>
+              <div class="col-4">
+                <div class="input-group" style="max-width: 150px;">
+                  <button class="btn btn-outline-dark" type="button" onclick="decreaseQuantity()">
+                    <i class="bi bi-dash"></i>
+                  </button>
+                  <input type="number" class="form-control text-center border-dark" 
+                         value="1" min="1" max="{{product.stock}}" id="quantityInput">
+                  <button class="btn btn-outline-dark" type="button" onclick="increaseQuantity()">
+                    <i class="bi bi-plus"></i>
+                  </button>
+                </div>
+              </div>
+              <div class="col-auto">
+                <span class="text-muted">Max: {{product.stock}} units</span>
+              </div>
+            </div>
+
+            <div class="d-flex gap-3 mt-4">
+              <button class="btn btn-dark btn-lg px-5 flex-grow-1" {{#unless product.stock}}disabled{{/unless}}>
+                <i class="bi bi-cart-plus me-2"></i>Add to Cart
+              </button>
+              <button class="btn btn-outline-dark btn-lg px-4">
+                <i class="bi bi-heart"></i>
+              </button>
+            </div>
+          </div>
+
+          {{!-- Product Meta --}}
+          <div class="product-meta mt-4 pt-4 border-top">
+            <div class="row g-3">
+              <div class="col-6">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="bi bi-box-seam text-muted"></i>
+                  <span class="small">SKU: {{product.sku}}</span>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="d-flex align-items-center gap-2">
+                  <i class="bi bi-share text-muted"></i>
+                  <div class="share-buttons">
+                    <button class="btn btn-sm btn-outline-secondary">
+                      <i class="bi bi-facebook"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary">
+                      <i class="bi bi-twitter"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-secondary">
+                      <i class="bi bi-instagram"></i>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {{!-- Back Button --}}
+          <div class="mt-5">
+            <a href="/products" class="btn btn-outline-dark btn-lg px-4">
+              <i class="bi bi-arrow-left me-2"></i>Back to Products
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {{!-- Related Products --}}
+    {{#if relatedProducts.length}}
+      <div class="related-products mt-5 pt-5">
+        <h3 class="fw-bold mb-4">Related Products</h3>
+        <div class="row g-4">
+          {{#each relatedProducts}}
+            <div class="col-6 col-md-3">
+              <div class="card border-0 shadow-sm h-100">
+                <img src="{{image}}" class="card-img-top" style="height: 180px; object-fit: cover;" alt="{{name}}">
+                <div class="card-body">
+                  <h6 class="card-title fw-bold">{{name}}</h6>
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="fw-bold text-dark">${{price}}</span>
+                    <a href="/products/{{slug}}" class="btn btn-sm btn-outline-dark">View</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          {{/each}}
+        </div>
+      </div>
+    {{/if}}
+  </div>
+</div>
+
+<script>
+  function changeMainImage(src) {
+    document.getElementById('mainProductImage').src = src;
+    document.querySelectorAll('.thumbnail-image').forEach(img => {
+      img.classList.remove('active', 'border-dark');
+      img.classList.add('border-light');
+    });
+    event.currentTarget.classList.add('active', 'border-dark');
+    event.currentTarget.classList.remove('border-light');
+  }
+
+  function decreaseQuantity() {
+    const input = document.getElementById('quantityInput');
+    const current = parseInt(input.value);
+    if (current > 1) {
+      input.value = current - 1;
+    }
+  }
+
+  function increaseQuantity() {
+    const input = document.getElementById('quantityInput');
+    const current = parseInt(input.value);
+    const max = parseInt('{{product.stock}}');
+    if (current < max) {
+      input.value = current + 1;
+    }
+  }
+
+  function calculateDiscount(current, original) {
+    return Math.round(((original - current) / original) * 100);
+  }
+</script>
+
+<style>
+  .product-detail-page {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  }
+
+  .breadcrumb {
+    background: transparent;
+    padding: 0;
+  }
+
+  .breadcrumb-item a {
+    color: #6c757d;
+    transition: color 0.3s;
+  }
+
+  .breadcrumb-item a:hover {
+    color: #212529;
+  }
+
+  .rounded-4 {
+    border-radius: 1.5rem !important;
+  }
+
+  .main-image {
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    padding: 2rem;
+  }
+
+  .thumbnail-image {
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .thumbnail-image:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  }
+
+  .thumbnail-image.active {
+    border: 2px solid #212529 !important;
+  }
+
+  .cursor-pointer {
+    cursor: pointer;
+  }
+
+  .price-section .display-4 {
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+  }
+
+  .input-group .btn-outline-dark:hover {
+    background-color: #212529;
+    color: white;
+  }
+
+  .btn-dark {
+    background: linear-gradient(135deg, #212529, #495057);
+    border: none;
+    transition: all 0.3s ease;
+  }
+
+  .btn-dark:hover {
+    background: linear-gradient(135deg, #495057, #212529);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  }
+
+  .btn-outline-dark:hover {
+    background-color: #212529;
+  }
+
+  .share-buttons .btn:hover {
+    background-color: #212529;
+    color: white;
+  }
+
+  .stock-status .badge {
+    font-size: 0.9rem;
+  }
+
+  .action-section .input-group {
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .action-section input {
+    font-weight: bold;
+    font-size: 1.1rem;
+  }
+
+  @media (max-width: 768px) {
+    .display-5 {
+      font-size: 2rem;
+    }
+
+    .display-4 {
+      font-size: 2.5rem;
+    }
+
+    .main-image {
+      padding: 1rem;
+    }
+
+    .action-section .btn-lg {
+      padding: 0.75rem 1.5rem;
+      font-size: 1rem;
+    }
+  }
+</style>
